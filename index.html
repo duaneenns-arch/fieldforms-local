@@ -9,7 +9,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <title>FieldForms — Inspection Forms</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="./jspdf.umd.min.js"></script>
 <style>
 
 :root{
@@ -144,6 +144,35 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
 .form-actions .fa-sub{display:flex;gap:10px;}
 .form-actions .fa-sub .btn{flex:1 1 auto;padding:13px;}
 .form-actions .fa-note{font-size:12px;color:var(--muted);margin:4px 2px 0;line-height:1.5;text-align:center;}
+/* ===== build-3 additions ===== */
+.stats{display:flex;gap:10px;margin:8px 0 4px;}
+.stats .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;}
+.stats .stat .num{display:block;font-size:24px;font-weight:800;color:var(--navy);line-height:1;}
+.stats .stat .lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-top:5px;}
+.dash-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+.dash-selects{display:flex;gap:10px;flex-wrap:wrap;}
+.dash-selects label{flex:1;min-width:140px;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;gap:4px;}
+.dash-selects select{padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;background:#fff;color:var(--ink);font-weight:500;text-transform:none;letter-spacing:0;}
+.dash-selects select:focus{outline:none;border-color:var(--accent);}
+.insp-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 10px;}
+.insp-header .insp-label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);}
+.insp-header .insp-no{font-size:17px;font-weight:800;letter-spacing:.5px;color:var(--accent);background:#fff3ea;border:1px solid #ffd9b3;border-radius:8px;padding:4px 12px;}
+.insp-header .insp-no.pending{color:var(--muted);background:#f0ede5;border-color:var(--line);font-size:13px;font-weight:600;}
+.fcard-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px;}
+.fcard-top .insp-no-card{font-size:15px;font-weight:800;letter-spacing:.4px;color:var(--accent);}
+.number-preview{font-size:13px;color:var(--muted);margin-top:8px;padding:10px 12px;background:#f0ede5;border-radius:10px;}
+.number-preview b{color:var(--navy);font-size:15px;letter-spacing:.5px;}
+.tpl-modal{position:fixed;inset:0;background:rgba(10,35,66,.45);display:flex;align-items:center;justify-content:center;z-index:80;padding:18px;}
+.tpl-modal.hidden{display:none;}
+.tpl-card{background:var(--paper);border-radius:18px;max-width:520px;width:100%;max-height:85vh;overflow:auto;padding:22px;}
+.tpl-head{display:flex;align-items:center;justify-content:space-between;}
+.tpl-head h2{margin:0;color:var(--navy);font-size:20px;}
+.tpl-x{background:none;border:none;font-size:28px;line-height:1;color:var(--muted);cursor:pointer;}
+.tpl-note{font-size:12.5px;color:var(--muted);margin:6px 0 16px;line-height:1.5;}
+.tpl-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;}
+.tpl-row .tpl-name{font-weight:800;color:var(--navy);font-size:15px;}
+.tpl-row .tpl-sum{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.tpl-acts{display:flex;gap:8px;flex:none;}
 .btn-complete{background:var(--ok);color:#fff;}
 .edit-warning{background:#fff7ed;border:1px solid #ffd9b3;color:#8a4b12;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;line-height:1.45;display:flex;gap:10px;align-items:flex-start;}
 .edit-warning b{color:#b23b2e;}
@@ -276,6 +305,40 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
     </button>
     <div class="picker-foot">
       <button class="btn btn-sec" onclick="showWelcome()">&lsaquo; Back</button>
+      <button class="btn btn-ghost" onclick="openSettings()">Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div id="settings" class="hidden">
+  <div class="topbar">
+    <div class="logo" style="display:flex;align-items:center;gap:10px;">
+      <svg width="30" height="30" viewBox="0 0 58 58" aria-hidden="true" style="flex:none;">
+        <rect x="3" y="3" width="52" height="52" rx="13" fill="#ff6b1a"/>
+        <rect x="15" y="14" width="28" height="6" rx="3" fill="#ffffff"/>
+        <rect x="15" y="26" width="28" height="4" rx="2" fill="#ffffff" opacity="0.85"/>
+        <rect x="15" y="35" width="19" height="4" rx="2" fill="#ffffff" opacity="0.85"/>
+        <path d="M15 45 L19 49 L28 40" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>FieldForms<small>SHIMIZU NORTH AMERICA</small></span>
+    </div>
+  </div>
+  <div class="wrap" style="max-width:560px;">
+    <h1 style="color:var(--navy);font-size:24px;margin:6px 0 4px;">Settings</h1>
+    <p style="color:var(--muted);font-size:14px;margin:0 0 20px;">Used to generate your inspection record numbers. Stored on this device only.</p>
+    <div class="section">
+      <h2>Your Details</h2>
+      <div class="body">
+        <div class="field"><label>Company Code <span class="req">*</span></label><input type="text" id="setCompanyCode" maxlength="6" placeholder="SNA" oninput="this.value=this.value.toUpperCase();updateNumberPreview()"></div>
+        <div class="field"><label>User Initials <span class="req">*</span></label><input type="text" id="setUserInitials" maxlength="4" placeholder="DE" oninput="this.value=this.value.toUpperCase();updateNumberPreview()"></div>
+        <div class="field"><label>User Name</label><input type="text" id="setUserName" placeholder="Duane Enns"></div>
+        <div class="number-preview">Your inspection numbers will look like: <b id="numberPreview">SNA-DE-0001</b></div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary fa-main" onclick="saveSettingsForm()">Save Settings</button>
+      <button class="btn btn-sec fa-main" onclick="cancelSettings()">Cancel</button>
     </div>
   </div>
 </div>
@@ -293,7 +356,8 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
       </svg>
       <span>FieldForms<small>SHIMIZU NORTH AMERICA</small></span>
     </div>
-    <div class="right">
+    <div class="right" style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-ghost btn-sm" onclick="openSettings()">Settings</button>
       <button class="btn btn-ghost btn-sm" onclick="backToPicker()">Forms</button>
     </div>
   </div>
@@ -306,9 +370,15 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
         <p id="dashSubline">Saved on this device.</p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-sec" onclick="openTemplates()">Templates</button>
         <button class="btn btn-sec" onclick="duplicateLast()">Duplicate Last Form</button>
         <button class="btn btn-primary" onclick="newForm()">+ New Form</button>
       </div>
+    </div>
+    <div class="stats" id="dashStats">
+      <div class="stat"><span class="num" id="statDraft">0</span><span class="lbl">Drafts</span></div>
+      <div class="stat"><span class="num" id="statCompleted">0</span><span class="lbl">Completed</span></div>
+      <div class="stat"><span class="num" id="statPdf">0</span><span class="lbl">PDF Generated</span></div>
     </div>
     <div class="tabs" id="dashTabs">
       <button class="on" data-tab="all" onclick="setTab('all')">All</button>
@@ -316,8 +386,23 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
       <button data-tab="completed" onclick="setTab('completed')">Completed</button>
       <button data-tab="pdf_generated" onclick="setTab('pdf_generated')">PDF Generated</button>
     </div>
-    <div class="dash-search">
-      <input type="search" id="dashSearch" placeholder="Search project, project #, subcontractor, location, status…" oninput="onSearchInput()" autocomplete="off">
+    <div class="dash-controls">
+      <div class="dash-search">
+        <input type="search" id="dashSearch" placeholder="Search project, project #, subcontractor, location, status, number…" oninput="onSearchInput()" autocomplete="off">
+      </div>
+      <div class="dash-selects">
+        <label>Project
+          <select id="projectFilter" onchange="onFilterChange()"><option value="">All Projects</option></select>
+        </label>
+        <label>Sort
+          <select id="sortSelect" onchange="onSortChange()">
+            <option value="recent">Most Recent</option>
+            <option value="oldest">Oldest</option>
+            <option value="project">Project Name</option>
+            <option value="number">Inspection Number</option>
+          </select>
+        </label>
+      </div>
     </div>
     <div id="formList"></div>
     <div style="margin-top:20px;text-align:center;">
@@ -331,6 +416,7 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
     <div class="form-top">
       <button class="btn btn-sec btn-sm" onclick="confirmLeave()">&lsaquo; Back to Forms</button>
     </div>
+    <div class="insp-header"><span class="insp-label">Inspection Record No.</span><span class="insp-no" id="inspNoHeader">Number assigned on creation</span></div>
     <h1 id="formHeading" style="color:var(--navy);margin:0 0 16px;font-size:24px;">New Pressure Test</h1>
 
     <div id="editWarning" class="edit-warning hidden">
@@ -466,8 +552,19 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
         <button class="btn btn-sec" onclick="saveDraft()">Save Draft</button>
         <button class="btn btn-complete" onclick="markComplete()">Mark Complete</button>
       </div>
-      <p class="fa-note">“Mark Complete” just flags this form as finished on your dashboard. “Generate PDF” is what produces the shareable file.</p>
+      <div class="fa-sub">
+        <button class="btn btn-sec" onclick="saveAsTemplate()">Save as Template</button>
+      </div>
+      <p class="fa-note">“Mark Complete” just flags this form as finished on your dashboard. “Generate PDF” is what produces the shareable file. “Save as Template” stores the reusable details (not photos, signatures, dates, or readings) for quick reuse.</p>
     </div>
+  </div>
+</div>
+
+<div class="tpl-modal hidden" id="templatesModal">
+  <div class="tpl-card">
+    <div class="tpl-head"><h2>Form Templates</h2><button class="tpl-x" onclick="closeTemplates()" aria-label="Close">&times;</button></div>
+    <p class="tpl-note">Templates store reusable details only — no photos, signatures, dates, or readings. Tap “Use” to start a new form from a template.</p>
+    <div id="templatesList"></div>
   </div>
 </div>
 
@@ -482,23 +579,40 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
    Generated PDFs are shared manually by the user.
    ============================================================ */
 
-/* ---------- form types (extensible) ---------- */
+/* ---------- form types (extensible) ----------
+   Architecture supports multiple form types. Only ATC-11 is built today.
+   To add a form later: add an entry here, add a card to the picker, and
+   provide its field set + PDF renderer. Everything else (drafts, numbering,
+   dashboard, templates) is form-type aware already via each record's
+   `formType` tag. Planned types are listed (disabled) so the picker can show
+   what's coming without enabling unbuilt forms. */
 const FORM_TYPES = {
-  atc11_pressure_test: { label:'Pipe Pressure & Leakage Function Test', code:'ATC-11', desc:'SHIMIZU ATC-11 pressure / leakage test report.' }
+  atc11_pressure_test: { label:'Pipe Pressure & Leakage Function Test', code:'ATC-11', desc:'SHIMIZU ATC-11 pressure / leakage test report.', ready:true }
 };
+/* Planned (not yet built) — kept here so the roadmap lives with the code. */
+const PLANNED_FORM_TYPES = [
+  { code:'CPC',  label:'Concrete Pour Card' },
+  { code:'WELD', label:'Welding Inspection' },
+  { code:'EQST', label:'Equipment Startup' },
+  { code:'PUNCH',label:'Punch List' },
+  { code:'SAFE', label:'Safety Observation' }
+];
 
 /* ---------- app state ---------- */
 const state = {
   result:'', reinspect:'', nextwork:'',
   startPhoto:null, endPhoto:null, extras:[],
   status:'draft', formType:'atc11_pressure_test',
-  createdAt:null, completedAt:null, editHistory:[]
+  createdAt:null, completedAt:null, editHistory:[],
+  inspectionNumber:null
 };
 let currentFormId = null;   // localId of the draft being edited
 let currentTab = 'all';
 let dirty = false;
 let _cache = [];            // cached list of saved forms
 let _searchTerm = '';
+let _sortMode = 'recent';   // recent | oldest | project | number
+let _projectFilter = '';    // '' = all projects
 
 /* fields persisted with every record (and used for collect/populate) */
 const FIELDS = ['projectName','projectNumber','inspector','subcontractor','system','location','drawingRef','pipeMaterial',
@@ -566,6 +680,148 @@ function clearAllRecent(){
 }
 
 /* =======================================================================
+   SETTINGS — company code, user initials, user name (localStorage)
+   ======================================================================= */
+const SETTINGS_KEY = 'ff_settings_v1';
+function loadSettings(){
+  try{ return Object.assign({companyCode:'',userInitials:'',userName:''}, JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')); }
+  catch(e){ return {companyCode:'',userInitials:'',userName:''}; }
+}
+function saveSettings(s){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }catch(e){} }
+function settingsComplete(){ const s=loadSettings(); return !!(s.companyCode && s.userInitials); }
+
+let _settingsReturn = 'picker';   // which screen to return to after Settings
+function openSettings(){
+  // remember where we came from: the dashboard (app visible) or the picker
+  _settingsReturn = !document.getElementById('app').classList.contains('hidden') ? 'app' : 'picker';
+  const s=loadSettings();
+  document.getElementById('setCompanyCode').value=s.companyCode||'';
+  document.getElementById('setUserInitials').value=s.userInitials||'';
+  document.getElementById('setUserName').value=s.userName||'';
+  updateNumberPreview();
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('welcome').classList.add('hidden');
+  document.getElementById('picker').classList.add('hidden');
+  document.getElementById('settings').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+function updateNumberPreview(){
+  const cc=(document.getElementById('setCompanyCode').value||'').trim().toUpperCase()||'SNA';
+  const ui=(document.getElementById('setUserInitials').value||'').trim().toUpperCase()||'XX';
+  const el=document.getElementById('numberPreview');
+  if(el) el.textContent=cc+'-'+ui+'-0001';
+}
+function leaveSettings(){
+  document.getElementById('settings').classList.add('hidden');
+  if(_settingsReturn==='app'){ document.getElementById('app').classList.remove('hidden'); showDash(); }
+  else { showPicker(); }
+}
+function saveSettingsForm(){
+  const cc=(document.getElementById('setCompanyCode').value||'').trim().toUpperCase();
+  const ui=(document.getElementById('setUserInitials').value||'').trim().toUpperCase();
+  const un=(document.getElementById('setUserName').value||'').trim();
+  if(!cc || !ui){ toast('Company Code and User Initials are required'); return; }
+  saveSettings({companyCode:cc, userInitials:ui, userName:un});
+  toast('Settings saved');
+  leaveSettings();
+}
+function cancelSettings(){ leaveSettings(); }
+
+/* =======================================================================
+   INSPECTION RECORD NUMBER — local, per company-code + user-initials
+   Format: <CC>-<UI>-NNNN  (e.g. SNA-DE-0001). Sequential per device/user.
+   Assigned ONCE at form creation; never changes; duplicating gets a new one.
+   ======================================================================= */
+const COUNTER_KEY = 'ff_counters_v1';
+function loadCounters(){ try{ return JSON.parse(localStorage.getItem(COUNTER_KEY)||'{}'); }catch(e){ return {}; } }
+function saveCounters(c){ try{ localStorage.setItem(COUNTER_KEY, JSON.stringify(c)); }catch(e){} }
+function padNum(n){ return String(n).padStart(4,'0'); }
+/* hand out the next sequential number for the current settings prefix */
+function nextInspectionNumber(){
+  const s=loadSettings();
+  const cc=(s.companyCode||'SNA').toUpperCase();
+  const ui=(s.userInitials||'XX').toUpperCase();
+  const prefix=cc+'-'+ui;
+  const counters=loadCounters();
+  const next=(typeof counters[prefix]==='number'?counters[prefix]:0)+1;
+  counters[prefix]=next;
+  saveCounters(counters);
+  return prefix+'-'+padNum(next);
+}
+
+/* =======================================================================
+   TEMPLATES — saved sets of reusable values (localStorage)
+   Templates DO NOT store photos, signatures, dates, or readings.
+   ======================================================================= */
+const TEMPLATE_KEY = 'ff_templates_v1';
+/* fields a template is allowed to carry (reusable identity/spec values only) */
+const TEMPLATE_FIELDS = ['projectName','projectNumber','inspector','subcontractor','system','location','drawingRef','pipeMaterial',
+  'workingPressure','testPressure','duration','subName','subCompany','mainName','mainCompany','clientName','clientCompany'];
+function loadTemplates(){ try{ return JSON.parse(localStorage.getItem(TEMPLATE_KEY)||'[]'); }catch(e){ return []; } }
+function saveTemplates(arr){ try{ localStorage.setItem(TEMPLATE_KEY, JSON.stringify(arr)); }catch(e){ toast('Could not save template'); } }
+function saveAsTemplate(){
+  const name=prompt('Name this template (e.g. “Foxconn Standard Pressure Test”):','');
+  if(name==null) return;
+  const clean=name.trim();
+  if(!clean){ toast('Template needs a name'); return; }
+  const g=id=>{const el=document.getElementById(id);return el?el.value:'';};
+  const tpl={ id:'tpl_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), name:clean, formType:state.formType||'atc11_pressure_test', values:{} };
+  TEMPLATE_FIELDS.forEach(f=>{ const v=g(f); if(v) tpl.values[f]=v; });
+  const arr=loadTemplates();
+  // replace if same name exists (case-insensitive)
+  const i=arr.findIndex(t=>t.name.toLowerCase()===clean.toLowerCase());
+  if(i>=0) arr[i]=tpl; else arr.push(tpl);
+  saveTemplates(arr);
+  toast('Template saved: '+clean);
+}
+/* Start a NEW form pre-filled from a template (fresh number, no photos/sigs/dates). */
+function newFromTemplate(id){
+  const tpl=loadTemplates().find(t=>t.id===id);
+  if(!tpl){ toast('Template not found'); return; }
+  if(!settingsComplete()){
+    if(confirm('Set your Company Code and Initials first? Used for inspection numbers.')){ openSettings(); return; }
+  }
+  state.formType=tpl.formType||'atc11_pressure_test';
+  resetForm();currentFormId=null;
+  TEMPLATE_FIELDS.forEach(f=>{ const el=document.getElementById(f); if(el && tpl.values[f]!=null) el.value=tpl.values[f]; });
+  state.inspectionNumber=nextInspectionNumber();
+  document.getElementById('startDate').value=new Date().toISOString().slice(0,10);
+  dirty=true;
+  document.getElementById('formHeading').textContent='New form (template: '+tpl.name+')';
+  updateInspHeader();updateFinishedUI();
+  closeTemplates();
+  // ensure we're in the app view
+  document.getElementById('settings').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  showFormView();initPads();
+  toast('Started '+state.inspectionNumber+' from template');
+}
+function deleteTemplate(id){
+  if(!confirm('Delete this template?')) return;
+  saveTemplates(loadTemplates().filter(t=>t.id!==id));
+  renderTemplates();
+  toast('Template deleted');
+}
+function openTemplates(){ renderTemplates(); document.getElementById('templatesModal').classList.remove('hidden'); }
+function closeTemplates(){ document.getElementById('templatesModal').classList.add('hidden'); }
+function renderTemplates(){
+  const host=document.getElementById('templatesList');
+  const arr=loadTemplates();
+  if(!arr.length){ host.innerHTML='<p style="color:var(--muted);font-size:14px;">No templates yet. Open a form, fill in the reusable details, and tap “Save as Template”.</p>'; return; }
+  host.innerHTML=arr.map(t=>{
+    const summary=[t.values.projectName,t.values.location].filter(Boolean).join(' · ')||'Reusable values';
+    return `<div class="tpl-row">
+      <div class="tpl-info"><div class="tpl-name">${esc(t.name)}</div><div class="tpl-sum">${esc(summary)}</div></div>
+      <div class="tpl-acts">
+        <button class="btn btn-primary btn-sm" onclick="newFromTemplate('${esc(t.id)}')">Use</button>
+        <button class="btn btn-sec btn-sm" onclick="deleteTemplate('${esc(t.id)}')" style="color:var(--bad)">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+
+/* =======================================================================
    LOCAL STORAGE — drafts (IndexedDB, with localStorage fallback)
    ======================================================================= */
 const DB_NAME='fieldforms_local', STORE='forms', DB_VER=1;
@@ -614,11 +870,13 @@ function showWelcome(){
   document.getElementById('welcome').classList.remove('hidden');
   document.getElementById('picker').classList.add('hidden');
   document.getElementById('app').classList.add('hidden');
+  document.getElementById('settings').classList.add('hidden');
 }
 function showPicker(){
   document.getElementById('welcome').classList.add('hidden');
   document.getElementById('picker').classList.remove('hidden');
   document.getElementById('app').classList.add('hidden');
+  document.getElementById('settings').classList.add('hidden');
 }
 function enterPicker(){ showPicker(); }
 /* choosing a form type from the picker opens the dashboard for that type */
@@ -626,6 +884,7 @@ function chooseFormType(type){
   state.formType = type || 'atc11_pressure_test';
   document.getElementById('welcome').classList.add('hidden');
   document.getElementById('picker').classList.add('hidden');
+  document.getElementById('settings').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   loadForms();
   showDash();
@@ -662,27 +921,53 @@ async function loadForms(){
   try{
     _cache = await idbAll();
     _cache.forEach(f=>{ f.status=normStatus(f.status); });
-    _cache.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));   // newest first
+    updateStats();
+    populateProjectFilter();
     renderList();
   }catch(e){ console.error(e); _cache=[]; renderList(); }
   finally{ spin(false); }
 }
+function updateStats(){
+  let d=0,c=0,p=0;
+  _cache.forEach(f=>{ const s=normStatus(f.status); if(s==='completed')c++; else if(s==='pdf_generated')p++; else d++; });
+  const set=(id,n)=>{const el=document.getElementById(id);if(el)el.textContent=n;};
+  set('statDraft',d); set('statCompleted',c); set('statPdf',p);
+}
+function populateProjectFilter(){
+  const sel=document.getElementById('projectFilter');
+  if(!sel) return;
+  const names=[...new Set(_cache.map(f=>(f.projectName||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const cur=_projectFilter;
+  sel.innerHTML='<option value="">All Projects</option>'+names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  if(names.includes(cur)) sel.value=cur; else { _projectFilter=''; sel.value=''; }
+}
 function onSearchInput(){ _searchTerm=(document.getElementById('dashSearch').value||'').trim().toLowerCase(); renderList(); }
+function onSortChange(){ _sortMode=document.getElementById('sortSelect').value; renderList(); }
+function onFilterChange(){ _projectFilter=document.getElementById('projectFilter').value; renderList(); }
 function matchesSearch(f){
   if(!_searchTerm) return true;
   const stLabel={draft:'draft',completed:'completed',pdf_generated:'pdf generated'}[normStatus(f.status)]||'';
-  const hay=[f.projectName,f.projectNumber,f.subcontractor,f.location,f.inspector,stLabel].map(v=>(v==null?'':String(v)).toLowerCase()).join(' ');
+  const hay=[f.projectName,f.projectNumber,f.subcontractor,f.location,f.inspector,f.inspectionNumber,stLabel].map(v=>(v==null?'':String(v)).toLowerCase()).join(' ');
   return hay.includes(_searchTerm);
+}
+function sortItems(items){
+  const byRecent=(a,b)=>(b.updatedAt||0)-(a.updatedAt||0);
+  if(_sortMode==='oldest') return items.sort((a,b)=>(a.updatedAt||0)-(b.updatedAt||0));
+  if(_sortMode==='project') return items.sort((a,b)=>(a.projectName||'').localeCompare(b.projectName||'')||byRecent(a,b));
+  if(_sortMode==='number') return items.sort((a,b)=>(a.inspectionNumber||'').localeCompare(b.inspectionNumber||'',undefined,{numeric:true})||byRecent(a,b));
+  return items.sort(byRecent); // recent (default)
 }
 function mostRecentForm(){ return _cache.length ? _cache.slice().sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0))[0] : null; }
 function renderList(){
   const host=document.getElementById('formList');
   let items=_cache.slice();
   if(currentTab!=='all') items=items.filter(f=>normStatus(f.status)===currentTab);
+  if(_projectFilter) items=items.filter(f=>(f.projectName||'').trim()===_projectFilter);
   items=items.filter(matchesSearch);
+  items=sortItems(items);
   let html='<div class="cards">';
   if(items.length===0){
-    let msg = _searchTerm ? 'No forms match “'+esc(_searchTerm)+'”.'
+    let msg = (_searchTerm||_projectFilter) ? 'No forms match the current search/filter.'
       : (currentTab==='all' ? 'No saved forms yet. Tap “+ New Form” to start one.' : 'Nothing here yet.');
     html+='</div><div class="empty-state"><div class="big">📋</div>'+msg+'</div>';
     host.innerHTML=html;
@@ -692,25 +977,23 @@ function renderList(){
   items.forEach(f=>{
     const st=normStatus(f.status);
     const stLabel={draft:'Draft',completed:'Completed',pdf_generated:'PDF Generated'}[st]||st;
-    const dt=f.startDate||(f.updatedAt?new Date(f.updatedAt).toISOString().slice(0,10):'');
-    const typeLabel=f.formTypeLabel||(FORM_TYPES[f.formType]&&FORM_TYPES[f.formType].label)||'ATC-11 Pressure Test';
-    const openLabel = st==='draft' ? 'Continue' : 'View / Edit';
+    const mod=f.updatedAt?new Date(f.updatedAt).toLocaleString():'—';
     const lid=esc(f.localId);
+    const inspNo=f.inspectionNumber?esc(f.inspectionNumber):'(no number)';
     const projNoLine = f.projectNumber ? `<span><b>Project #:</b> ${esc(f.projectNumber)}</span>` : '';
-    const inspectorLine = f.inspector ? `<span><b>Inspector:</b> ${esc(f.inspector)}</span>` : '';
     html+=`<div class="fcard">
+      <div class="fcard-top">
+        <span class="insp-no-card">${inspNo}</span>
+        <span class="status ${st}">${stLabel}</span>
+      </div>
       <div class="pn">${esc(f.projectName)||'(Untitled project)'}</div>
       <div class="meta">
-        <span><b>Type:</b> ${esc(typeLabel)}</span>
         ${projNoLine}
-        <span><b>Subcontractor:</b> ${esc(f.subcontractor)||'—'}</span>
-        ${inspectorLine}
         <span><b>Location:</b> ${esc(f.location)||'—'}</span>
-        <span><b>Date:</b> ${esc(dt)||'—'}</span>
+        <span><b>Last modified:</b> ${esc(mod)}</span>
       </div>
-      <div class="tagrow"><span class="status ${st}">${stLabel}</span></div>
       <div class="acts">
-        <button class="btn btn-sec btn-sm" onclick="openForm('${lid}')">${openLabel}</button>
+        <button class="btn btn-sec btn-sm" onclick="openForm('${lid}')">${st==='draft'?'Continue':'View / Edit'}</button>
         <button class="btn btn-sec btn-sm" onclick="duplicateForm('${lid}')">Duplicate</button>
         <button class="btn btn-sec btn-sm" onclick="regenPDF('${lid}')">PDF</button>
         <button class="btn btn-sec btn-sm" onclick="sharePDF('${lid}')">Share</button>
@@ -734,7 +1017,7 @@ async function removeForm(id){
 function resetForm(){
   FIELDS.forEach(id=>{const el=document.getElementById(id);if(el)el.value=(id==='mainCompany'?'SHIMIZU North America':'');});
   state.result='';state.reinspect='';state.nextwork='';state.startPhoto=null;state.endPhoto=null;state.extras=[];state.status='draft';
-  state.formType=state.formType||'atc11_pressure_test';state.createdAt=null;state.completedAt=null;state.editHistory=[];
+  state.formType=state.formType||'atc11_pressure_test';state.createdAt=null;state.completedAt=null;state.editHistory=[];state.inspectionNumber=null;
   document.querySelectorAll('#resultSeg button,.yn button').forEach(b=>b.classList.remove('on'));
   document.getElementById('startPhotoPreview').innerHTML='';
   document.getElementById('endPhotoPreview').innerHTML='';
@@ -743,9 +1026,17 @@ function resetForm(){
 }
 function newForm(){
   if(dirty && !confirm('Start a new form? Unsaved changes will be lost.'))return;
+  if(!settingsComplete()){
+    if(confirm('Set your Company Code and Initials first? This is used for inspection numbers like SNA-DE-0001.')){ openSettings(); return; }
+  }
   resetForm();currentFormId=null;dirty=false;
+  state.inspectionNumber=nextInspectionNumber();   // assigned once, at creation
+  // convenience: prefill inspector from settings (user name) if empty
+  const s=loadSettings();
+  if(s.userName){ const insp=document.getElementById('inspector'); if(insp && !insp.value) insp.value=s.userName; }
   document.getElementById('startDate').value=new Date().toISOString().slice(0,10);
-  document.getElementById('formHeading').textContent='New '+(FORM_TYPES[state.formType]?FORM_TYPES[state.formType].code:'Form')+' Pressure Test';
+  document.getElementById('formHeading').textContent='New '+(FORM_TYPES[state.formType]?FORM_TYPES[state.formType].code:'Form');
+  updateInspHeader();
   updateFinishedUI();
   showFormView();initPads();
 }
@@ -755,12 +1046,16 @@ async function duplicateLast(){
   if(!f){ toast('No previous form to duplicate'); return; }
   await duplicateForm(f.localId);
 }
-/* Duplicate a specific form: load its data into a brand-new editable form */
+/* Duplicate a specific form: load reusable data into a brand-new editable form
+   with a NEW inspection number. Photos/signatures/readings/dates are NOT copied. */
 async function duplicateForm(id){
   spin(true);
   try{
     const f = await idbGet(id);
     if(!f){ toast('Form not found'); return; }
+    if(!settingsComplete()){
+      if(confirm('Set your Company Code and Initials first? This is used for inspection numbers like SNA-DE-0001.')){ openSettings(); return; }
+    }
     resetForm();
     FIELDS.forEach(k=>{const el=document.getElementById(k);if(el&&f[k]!=null)el.value=f[k];});
     // copy choices but NOT photos/signatures/dates of the test itself — this is a fresh inspection
@@ -768,18 +1063,26 @@ async function duplicateForm(id){
     state.startPhoto=null;state.endPhoto=null;state.extras=[];
     state.status='draft';state.formType=f.formType||'atc11_pressure_test';
     state.createdAt=null;state.completedAt=null;state.editHistory=[];
+    state.inspectionNumber=nextInspectionNumber();   // NEW number for the duplicate
     // clear the test-specific date/time/reading fields so they aren't carried over by mistake
     ['startDate','startTime','startReading','endDate','endTime','endReading','pressureDrop','subDate','mainDate','clientDate'].forEach(k=>{const el=document.getElementById(k);if(el)el.value='';});
     document.getElementById('startDate').value=new Date().toISOString().slice(0,10);
     currentFormId=null;dirty=true;
     document.getElementById('formHeading').textContent='New form (from “'+(f.projectName||'previous')+'”)';
+    updateInspHeader();
     updateFinishedUI();
     showFormView();initPads();
-    toast('Loaded — edit and save as a new form');
+    toast('Loaded as '+state.inspectionNumber+' — edit and save');
   }catch(e){ console.error(e); toast('Could not duplicate'); }
   finally{ spin(false); }
 }
 function fmtStamp(ts){ if(!ts) return ''; const d=new Date(ts); return d.toLocaleString(); }
+function updateInspHeader(){
+  const el=document.getElementById('inspNoHeader');
+  if(!el) return;
+  el.textContent = state.inspectionNumber ? state.inspectionNumber : 'Number assigned on creation';
+  el.classList.toggle('pending', !state.inspectionNumber);
+}
 function updateFinishedUI(){
   const finished = state.status==='completed' || state.status==='pdf_generated';
   const warn=document.getElementById('editWarning');
@@ -807,6 +1110,7 @@ async function openForm(id){
     state.startPhoto=f.startPhoto||null;state.endPhoto=f.endPhoto||null;state.extras=f.extras||[];
     state.status=f.status||'draft';state.createdAt=f.createdAt||null;state.completedAt=f.completedAt||null;
     state.editHistory=Array.isArray(f.editHistory)?f.editHistory:[];
+    state.inspectionNumber=f.inspectionNumber||null;
     document.querySelectorAll('#resultSeg button').forEach(b=>b.classList.toggle('on',b.dataset.val===state.result));
     document.querySelectorAll('#reinspectYN button').forEach(b=>b.classList.toggle('on',b.dataset.val===state.reinspect));
     document.querySelectorAll('#nextworkYN button').forEach(b=>b.classList.toggle('on',b.dataset.val===state.nextwork));
@@ -816,6 +1120,7 @@ async function openForm(id){
     currentFormId=f.localId;dirty=false;
     const statusNote=state.status==='completed'?' (Completed)':(state.status==='pdf_generated'?' (PDF Generated)':'');
     document.getElementById('formHeading').textContent=(f.projectName||'Pressure Test')+statusNote;
+    updateInspHeader();
     updateFinishedUI();showFormView();initPads();
     ['subSig','mainSig','clientSig'].forEach(p=>{if(f[p])restorePad(p,f[p]);});
   }catch(e){console.error(e);toast('Could not open form');}
@@ -834,6 +1139,7 @@ function collect(){
   o.completedAt=state.completedAt||null;
   o.editHistory=state.editHistory||[];
   o.updatedAt=Date.now();
+  o.inspectionNumber=state.inspectionNumber||null;
   o.localId=currentFormId||newLocalId();
   return o;
 }
@@ -990,7 +1296,7 @@ async function buildPDF(d,action){
     const startImg=await urlToDataUrl(d.startPhoto);
     const endImg=await urlToDataUrl(d.endPhoto);
     const doc=renderPDF(d,startImg,endImg);
-    const fname=('PressureTest_'+(d.projectName||'Form')+'_'+(d.startDate||'')).replace(/[^a-z0-9_\-]/gi,'_')+'.pdf';
+    const fname=((d.inspectionNumber?d.inspectionNumber+'_':'')+'PressureTest_'+(d.projectName||'Form')).replace(/[^a-z0-9_\-]/gi,'_')+'.pdf';
     if(action==='save'){
       doc.save(fname);
       toast('PDF generated');
@@ -1039,13 +1345,17 @@ function renderPDF(d,startImg,endImg){
   y+=30;solidLine(M,y,PW-M,2.4);y+=12;
   doc.setFontSize(8.5);txt('2100 Riveredge Parkway, Suite 1100, Atlanta, GA 30328',M,y);y+=14;
 
-  /* ---- Improved header info band (added) — record metadata, two columns.
-     Layout of the official ATC-11 body below is unchanged; this sits above it. */
+  /* ---- Improved header info band — record metadata, two columns, with a
+     prominent Inspection Record Number. ATC-11 body below stays unchanged. */
   const pdfStatusLabel=(s)=>{s=(s||'draft').toString().toLowerCase();return s==='completed'?'Completed':(s==='pdf_generated'||s==='pdf generated')?'PDF Generated':'Draft';};
   const pdfDate=(ts)=>{ if(!ts) return '—'; try{ return new Date(ts).toLocaleString(); }catch(e){ return '—'; } };
   const bandTop=y;
   const colLx=M, colRx=M+RW/2+6;
-  doc.setFontSize(8.5);doc.setTextColor(...black);
+  // prominent inspection record number, top of band
+  doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(...black);
+  txt('INSPECTION RECORD No.  '+(d.inspectionNumber||'—'),M,y+2);
+  y+=16;
+  doc.setFontSize(8.5);
   const hLine=(x,label,val)=>{doc.setFont('helvetica','bold');txt(label,x,y);doc.setFont('helvetica','normal');txt(val||'—',x+92,y);};
   hLine(colLx,'Project No.:',d.projectNumber||'—');           hLine(colRx,'Status:',pdfStatusLabel(d.status));     y+=12;
   hLine(colLx,'Inspector:',d.inspector||'—');                 hLine(colRx,'Created:',pdfDate(d.createdAt));        y+=12;

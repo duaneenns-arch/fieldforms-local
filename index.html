@@ -77,7 +77,7 @@ input,select,textarea{font-family:inherit;}
 .banner{background:#fff7ed;border:1px solid #ffd9b3;color:#8a4b12;font-size:12.5px;padding:10px 14px;border-radius:10px;margin-bottom:16px;line-height:1.45;}
 
 /* ---- dashboard ---- */
-.wrap{max-width:1000px;margin:0 auto;padding:24px 18px 100px;}
+.wrap{max-width:1000px;margin:0 auto;padding:24px 18px 40px;}
 .dash-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px;}
 .dash-head h1{margin:0;font-size:26px;color:var(--navy);}
 .dash-head p{margin:2px 0 0;color:var(--muted);font-size:14px;}
@@ -139,9 +139,11 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
 .wtitle{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:10px;letter-spacing:.5px;}
 
 /* ---- footer action bar ---- */
-.footer-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:12px 18px;display:flex;gap:10px;z-index:30;box-shadow:0 -4px 16px rgba(0,0,0,.06);}
-.footer-bar .max{max-width:1000px;margin:0 auto;display:flex;gap:10px;width:100%;flex-wrap:wrap;}
-.footer-bar .btn{flex:1 1 auto;min-width:110px;padding:15px;}
+.form-actions{margin:28px 0 8px;display:flex;flex-direction:column;gap:12px;}
+.form-actions .fa-main{padding:16px;font-size:16px;}
+.form-actions .fa-sub{display:flex;gap:10px;}
+.form-actions .fa-sub .btn{flex:1 1 auto;padding:13px;}
+.form-actions .fa-note{font-size:12px;color:var(--muted);margin:4px 2px 0;line-height:1.5;text-align:center;}
 .btn-complete{background:var(--ok);color:#fff;}
 .edit-warning{background:#fff7ed;border:1px solid #ffd9b3;color:#8a4b12;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;line-height:1.45;display:flex;gap:10px;align-items:flex-start;}
 .edit-warning b{color:#b23b2e;}
@@ -242,7 +244,7 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
     <div class="land-tag">SHIMIZU North America</div>
     <p class="land-desc">Fill out inspection forms on any device, capture photos and signatures, and generate the official PDF &mdash; ready to share. Everything stays on your device.</p>
     <button class="enter-btn" onclick="enterPicker()">Get Started &rarr;</button>
-    <div class="local-note">FieldForms stores form drafts and recent values locally on this device. Generated PDFs are shared manually by you. No login, no company server, no automatic upload.</div>
+    <div class="local-note">FieldForms stores form drafts and recent values locally on this device.</div>
   </div>
   <div class="land-foot">FieldForms &middot; Local field tool &middot; v3 (local-first)</div>
 </div>
@@ -456,15 +458,16 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<div class="footer-bar hidden" id="footerBar">
-  <div class="max">
-    <button class="btn btn-sec" onclick="saveDraft()">Save Draft</button>
-    <button class="btn btn-complete" onclick="markComplete()">Mark Complete</button>
-    <button class="btn btn-primary" onclick="completeAndPDF()">Generate PDF</button>
-    <button class="btn btn-sec" onclick="shareCurrent()" title="Share PDF">Share</button>
+    <div class="form-actions" id="formActions">
+      <button class="btn btn-primary fa-main" onclick="completeAndPDF()">Generate PDF</button>
+      <button class="btn btn-sec fa-main" onclick="shareCurrent()" title="Share PDF">Share PDF</button>
+      <div class="fa-sub">
+        <button class="btn btn-sec" onclick="saveDraft()">Save Draft</button>
+        <button class="btn btn-complete" onclick="markComplete()">Mark Complete</button>
+      </div>
+      <p class="fa-note">“Mark Complete” just flags this form as finished on your dashboard. “Generate PDF” is what produces the shareable file.</p>
+    </div>
   </div>
 </div>
 
@@ -636,13 +639,11 @@ function backToPicker(){
 function showDash(){
   document.getElementById('dashView').classList.remove('hidden');
   document.getElementById('formView').classList.add('hidden');
-  document.getElementById('footerBar').classList.add('hidden');
   loadForms();
 }
 function showFormView(){
   document.getElementById('dashView').classList.add('hidden');
   document.getElementById('formView').classList.remove('hidden');
-  document.getElementById('footerBar').classList.remove('hidden');
   window.scrollTo(0,0);
 }
 

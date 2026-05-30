@@ -1,6 +1,6 @@
 /* FieldForms service worker — local-first build.
    Caches the app shell so it opens with no internet after one online visit. */
-const CACHE = 'fieldforms-local-v1';
+const CACHE = 'fieldforms-local-v2';
 const SHELL = [
   './',
   './index.html',

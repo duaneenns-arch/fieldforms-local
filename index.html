@@ -20,6 +20,8 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;}
+/* navy fill over the iPhone status-bar / notch area so content + buttons clear it */
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--navy);z-index:60;}
 body{font-family:"Helvetica Neue",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;}
 .hidden{display:none !important;}
 button{font-family:inherit;cursor:pointer;}
@@ -27,7 +29,7 @@ input,select,textarea{font-family:inherit;}
 .stripe{height:6px;background:linear-gradient(90deg,var(--accent) 0 33%,var(--steel) 33% 66%,var(--navy) 66% 100%);}
 
 /* ---- top bar ---- */
-.topbar{background:var(--navy);color:#fff;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.topbar{background:var(--navy);color:#fff;padding:12px 18px;padding-top:calc(12px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
 .topbar .logo{font-size:22px;font-weight:800;letter-spacing:.5px;}
 .topbar .logo small{font-size:9px;font-weight:600;letter-spacing:2px;color:#9fb6d4;display:block;margin-top:-3px;}
 .topbar .right{display:flex;align-items:center;gap:12px;font-size:13px;}
@@ -276,7 +278,7 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
     <button class="enter-btn" onclick="enterPicker()">Get Started &rarr;</button>
     <div class="local-note">FieldForms stores form drafts and recent values locally on this device.</div>
   </div>
-  <div class="land-foot">FieldForms &middot; Local field tool &middot; v4 (local-first)</div>
+  <div class="land-foot">FieldForms &middot; Local field tool &middot; v5 (local-first)</div>
 </div>
 
 <!-- ============ FORM-TYPE PICKER ============ -->
@@ -347,7 +349,7 @@ canvas.sig{width:100%;height:120px;display:block;touch-action:none;}
 <!-- ============ APP (dashboard + form) ============ -->
 <div id="app" class="hidden">
   <div class="topbar">
-    <div class="logo" onclick="showDash()" style="cursor:pointer;display:flex;align-items:center;gap:10px;">
+    <div class="logo" onclick="confirmLeave()" style="cursor:pointer;display:flex;align-items:center;gap:10px;">
       <svg width="30" height="30" viewBox="0 0 58 58" aria-hidden="true" style="flex:none;">
         <rect x="3" y="3" width="52" height="52" rx="13" fill="#ff6b1a"/>
         <rect x="15" y="14" width="28" height="6" rx="3" fill="#ffffff"/>

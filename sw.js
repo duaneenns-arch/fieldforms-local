@@ -2,7 +2,7 @@
    Caches the app shell so it opens with no internet after one online visit.
    jsPDF, pdf-lib, and the ATC-11 template are bundled locally, so the app
    makes NO outside network requests at all. */
-const CACHE = 'fieldforms-local-v4';
+const CACHE = 'fieldforms-local-v5';
 const SHELL = [
   './',
   './index.html',

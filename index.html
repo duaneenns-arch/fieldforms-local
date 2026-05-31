@@ -10,6 +10,7 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <title>FieldForms — Inspection Forms</title>
 <script src="./jspdf.umd.min.js"></script>
+<script src="./pdf-lib.min.js"></script>
 <style>
 
 :root{
@@ -1289,40 +1290,123 @@ async function urlToDataUrl(u){
   try{const r=await fetch(u);const b=await r.blob();return await new Promise(res=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(b);});}
   catch(e){return null;}
 }
+/* dataURL -> Uint8Array (for pdf-lib image embedding) */
+function dataUrlToBytes(durl){
+  const b64=durl.split(',')[1]||''; const bin=atob(b64); const len=bin.length; const arr=new Uint8Array(len);
+  for(let i=0;i<len;i++) arr[i]=bin.charCodeAt(i); return arr;
+}
+
+/* ============ FILL-THE-PDF (ATC-11) ============
+   Fills the official SHIMIZU ATC-11 template (atc11_template.pdf) using pdf-lib,
+   entirely in the browser. Output is the genuine company PDF with data in its
+   real fields. */
+let _atc11TemplateBytes=null;
+async function getAtc11Template(){
+  if(_atc11TemplateBytes) return _atc11TemplateBytes;
+  const r=await fetch('./atc11_template.pdf');
+  _atc11TemplateBytes=await r.arrayBuffer();
+  return _atc11TemplateBytes;
+}
+async function fillAtc11Blob(d){
+  const { PDFDocument }=window.PDFLib;
+  const tpl=await getAtc11Template();
+  const pdf=await PDFDocument.load(tpl);
+  const form=pdf.getForm();
+  const T=(name,val)=>{ try{ form.getTextField(name).setText(val==null?'':String(val)); }catch(e){} };
+  const C=(name,on)=>{ try{ const cb=form.getCheckBox(name); if(on) cb.check(); else cb.uncheck(); }catch(e){} };
+  // text fields
+  T('PROJECT NAME', d.projectName);
+  T('Subcontractor', d.subcontractor);
+  T('System', d.system);
+  T('Location', d.location);
+  T('Drawing Ref', d.drawingRef);
+  T('Pipe Material', d.pipeMaterial);
+  T('Working_Pressure', d.workingPressure);
+  T('Test_PSI', d.testPressure);
+  T('Test_Duration', d.duration);
+  T('Date_Start_af_date', d.startDate);
+  T('Time_Start', d.startTime);
+  T('Start_Pressure', d.startReading);
+  T('Date_End_af_date', d.endDate);
+  T('Time_End', d.endTime);
+  T('End_Pressure', d.endReading);
+  T('End_Pressure_Drop', d.pressureDrop);
+  T('REMARK  NONCONFORMANCE 1', d.remarks);
+  T('Name_Sub', d.subName);   T('Company_Sub', d.subCompany);   T('Date_Sub_af_date', d.subDate);
+  T('Name_Main', d.mainName); /* main company is preprinted on the form */ T('Date_main_af_date', d.mainDate);
+  T('Name_Rep', d.clientName); T('Company_Rep', d.clientCompany); T('Date_Rep_af_date', d.clientDate);
+  // inspection result checkboxes
+  C('Inspection_Approved', d.result==='Approved');
+  C('Inspection_Approved_w_Comment', d.result==='Approved with Comment');
+  C('Inspection_Not_Approved', d.result==='Not Approved');
+  C('Reinspect_Y', d.reinspect==='Yes'); C('Reinspect_N', d.reinspect==='No');
+  C('Acceptable_Y', d.nextwork==='Yes'); C('Acceptable_N', d.nextwork==='No');
+  // photos -> image button fields
+  async function setPhoto(field, durl){
+    if(!durl) return;
+    try{
+      const data=await urlToDataUrl(durl);
+      const bytes=dataUrlToBytes(data);
+      const img = data.indexOf('image/png')>=0 ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
+      form.getButton(field).setImage(img);
+    }catch(e){ console.warn('photo embed failed for',field,e); }
+  }
+  await setPhoto('Start_Photo_af_image', d.startPhoto);
+  await setPhoto('End_Photo_af_image', d.endPhoto);
+  // a 2nd remark line exists; if remarks are long, spill into it
+  if(d.remarks && String(d.remarks).length>70){
+    T('REMARK  NONCONFORMANCE 1', String(d.remarks).slice(0,70));
+    T('REMARK  NONCONFORMANCE 2', String(d.remarks).slice(70,140));
+  }
+  const bytes=await pdf.save();
+  return new Blob([bytes], {type:'application/pdf'});
+}
+
 async function buildPDF(d,action){
   action=action||'save';
   spin(true);
   try{
-    const startImg=await urlToDataUrl(d.startPhoto);
-    const endImg=await urlToDataUrl(d.endPhoto);
-    const doc=renderPDF(d,startImg,endImg);
-    const fname=((d.inspectionNumber?d.inspectionNumber+'_':'')+'PressureTest_'+(d.projectName||'Form')).replace(/[^a-z0-9_\-]/gi,'_')+'.pdf';
+    const fname=((d.inspectionNumber?d.inspectionNumber+'_':'')+'ATC-11_'+(d.projectName||'Form')).replace(/[^a-z0-9_\-]/gi,'_')+'.pdf';
+    let blob;
+    const type=d.formType||'atc11_pressure_test';
+    if(type==='atc11_pressure_test' && window.PDFLib){
+      // fill the genuine SHIMIZU PDF
+      blob = await fillAtc11Blob(d);
+    } else {
+      // fallback: draw from scratch (used if pdf-lib/template unavailable, or other form types)
+      const startImg=await urlToDataUrl(d.startPhoto);
+      const endImg=await urlToDataUrl(d.endPhoto);
+      blob = renderPDF(d,startImg,endImg).output('blob');
+    }
     if(action==='save'){
-      doc.save(fname);
+      downloadBlob(blob,fname);
       toast('PDF generated');
     } else if(action==='share'){
-      await sharePdfDoc(doc,fname,d);
+      await sharePdfBlob(blob,fname,d);
     }
-  }catch(e){console.error(e);toast('PDF error');}
+  }catch(e){console.error(e);toast('PDF error — '+(e.message||''));}
   finally{spin(false);}
 }
+function downloadBlob(blob,fname){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=fname; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 1500);
+}
 /* Share via the native share sheet (iPhone/iPad: AirDrop, Mail, Messages...).
-   Falls back to an email draft with the PDF downloaded alongside. */
-async function sharePdfDoc(doc,fname,d){
-  const blob=doc.output('blob');
+   Falls back to a download + email draft. */
+async function sharePdfBlob(blob,fname,d){
   const file=new File([blob],fname,{type:'application/pdf'});
-  const subject='Pressure Test — '+(d.projectName||'FieldForms');
+  const subject='ATC-11 Pressure Test — '+(d.projectName||'FieldForms');
   const body='Attached: ATC-11 Pipe Pressure & Leakage Function Test'
+    +(d.inspectionNumber?('\nInspection No: '+d.inspectionNumber):'')
     +(d.projectName?('\nProject: '+d.projectName):'')
     +(d.location?('\nLocation: '+d.location):'')
     +(d.startDate?('\nDate: '+d.startDate):'');
-  // 1) Native share with the actual file (best on iOS/iPadOS)
   if(navigator.canShare && navigator.canShare({files:[file]})){
     try{ await navigator.share({files:[file],title:subject,text:body}); return; }
-    catch(e){ if(e&&e.name==='AbortError')return; /* user cancelled */ }
+    catch(e){ if(e&&e.name==='AbortError')return; }
   }
-  // 2) Fallback: download the PDF, then open an email draft to attach it
-  doc.save(fname);
+  downloadBlob(blob,fname);
   const mailto='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body+'\n\n(Attach the PDF that was just downloaded: '+fname+')');
   window.location.href=mailto;
   toast('PDF downloaded — email draft opened');
